@@ -9,8 +9,11 @@
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@latest/tabler-icons.min.css" />
   <style>
     :root {
-      --green:  #1B813E;
-      --orange: #E98B2A;
+      --green:       #1B813E;
+      --green-dim:   #4A8A5E;   /* softer green for secondary text */
+      --green-pale:  #E4EDE6;   /* very light green for tinted backgrounds */
+      --orange:      #C47328;   /* toned-down, less neon */
+      --orange-pale: #F2E8D8;   /* warm cream for subtle highlights */
       --ink:    #16160E;
       --ink2:   #3A3A28;
       --ink3:   #7A7A5C;
@@ -48,8 +51,14 @@
 
     /* ── HEADER ── */
     header {
+      position: sticky;
+      top: 0;
+      z-index: 100;
       padding: 1.25rem 0;
       border-bottom: 1px solid var(--line);
+      background: rgba(244, 245, 241, 0.88);
+      backdrop-filter: blur(10px);
+      -webkit-backdrop-filter: blur(10px);
     }
     .header-inner {
       max-width: var(--col);
@@ -61,13 +70,16 @@
       gap: 1rem;
     }
     .site-name {
-      font-size: 14.5px;
-      font-weight: 500;
-      color: var(--ink);
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 32px;
+      height: 32px;
+      color: var(--ink3);
       text-decoration: none;
-      letter-spacing: 0.01em;
+      transition: color 0.15s;
     }
-    body.lang-zh .site-name { font-family: 'Zen Kaku Gothic New', sans-serif; letter-spacing: 0.06em; }
+    .site-name i { font-size: 20px; }
     .site-name:hover { color: var(--green); }
 
     .header-right {
@@ -201,8 +213,21 @@
       text-transform: uppercase;
       color: var(--ink3);
       padding: 2.75rem 0 1.5rem;
+      display: flex;
+      align-items: center;
+      gap: 0.55rem;
+    }
+    .section-label::before {
+      content: '';
+      display: inline-block;
+      width: 6px;
+      height: 6px;
+      background: var(--orange);
+      border-radius: 1px;
+      flex-shrink: 0;
     }
     body.lang-zh .section-label { text-transform: none; letter-spacing: 0.06em; }
+
 
     .project-grid {
       display: grid;
@@ -217,7 +242,8 @@
       cursor: pointer;
       transition: background 0.15s;
     }
-    .project-card:hover { background: #F4F4EE; }
+    .project-card { transition: background 0.18s, transform 0.18s; }
+    .project-card:hover { background: var(--green-pale); transform: translateY(-2px); }
     .project-card.wide {
       grid-column: 1 / -1;
     }
@@ -270,7 +296,7 @@
     }
     .project-status {
       font-size: 11px;
-      color: var(--green);
+      color: var(--green-dim);
       letter-spacing: 0.06em;
       margin-bottom: 0.4rem;
       display: flex;
@@ -367,6 +393,7 @@
       transition: background 0.1s;
     }
     .writing-row:last-child { border-bottom: 1px solid var(--line); }
+    .writing-row:hover { background: var(--green-pale); transform: translateX(3px); }
     .writing-row:hover .writing-title { color: var(--green); }
     .writing-date { font-size: 12px; color: var(--ink3); font-variant-numeric: tabular-nums; }
     .writing-title {
@@ -516,8 +543,9 @@
       color: var(--ink3);
       margin-top: 1.25rem;
       line-height: 1.6;
-      padding-top: 1rem;
-      border-top: 1px solid var(--line);
+      padding: 0.75rem 1rem;
+      background: var(--orange-pale);
+      border-left: 2px solid var(--orange);
     }
     .post-cite em { font-style: italic; }
     .post-action {
@@ -558,6 +586,7 @@
       font-weight: 300;
       margin-bottom: 2.5rem;
     }
+    body.lang-zh .about-prose { font-weight: 400; font-size: 15px; }
     .about-prose p + p { margin-top: 1em; }
     .about-prose a { color: var(--green); text-decoration: none; border-bottom: 1px solid transparent; transition: border-color 0.15s; }
     .about-prose a:hover { border-color: var(--green); }
@@ -586,6 +615,15 @@
     .plain-role { color: var(--ink); font-weight: 400; }
     .plain-co { color: var(--ink3); font-size: 12px; margin-top: 1px; }
     .now-dot { color: var(--orange); margin-right: 4px; }
+    .cert-group-label {
+      font-size: 10.5px;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--green-dim);
+      padding: 1.1rem 0 0.25rem;
+      border-top: 1px solid var(--line);
+    }
+    body.lang-zh .cert-group-label { text-transform: none; letter-spacing: 0.06em; }
 
     .lang-plain { display: flex; flex-direction: column; }
     .lang-row-plain {
@@ -667,10 +705,8 @@
 <!-- HEADER -->
 <header>
   <div class="header-inner">
-    <a href="#" class="site-name" onclick="showView('home',event)">
-      <span data-en>Chen Yi-Zhong</span>
-      <span data-zh>陳一中</span>
-      <span data-es>Chen Yi-Zhong</span>
+    <a href="#" class="site-name" onclick="showView('home',event)" title="Home">
+      <i class="ti ti-home"></i>
     </a>
     <div class="header-right">
       <button class="h-nav-link active" id="tab-home" onclick="showView('home',event)">
@@ -714,7 +750,7 @@
         </div>
         <p class="hero-bio">
           <span data-en>Researching safety layers for robot systems — interested in Physical AI, digital twins, and the sim-to-real gap. Currently building DAM, a detachable action monitor that sits between any robot policy and its hardware.</span>
-          <span data-zh>研究機器人系統的安全層——對 Physical AI、數位孿生與模擬到真實的落差感興趣。目前在做 DAM，一個插在任何機器人策略與硬體之間的可拆卸動作監控器。</span>
+          <span data-zh>研究機器人系統的安全層，對 Physical AI、數位孿生與模擬到真實的落差感興趣。目前在做 DAM，一個插在任何機器人策略與硬體之間的可拆卸動作監控器。</span>
           <span data-es>Construyo sistemas robóticos seguros — investigando Physical AI, gemelos digitales y la brecha entre simulación y mundo real. Actualmente trabajando en DAM, una capa de seguridad desmontable para cualquier política robótica.</span>
         </p>
         <div class="hero-links">
@@ -749,11 +785,12 @@
       <div class="project-card wide" id="proj-dam" onclick="toggleProject('proj-dam')">
         <div class="project-media">
           <iframe
-            src="https://www.linkedin.com/embed/feed/update/urn:li:ugcPost:7476473475638165504?compact=1"
+            src="https://drive.google.com/file/d/1bbM-ltsCIFcyEgiF6JRkFsFuMQreIuhl/preview"
             frameborder="0"
             allowfullscreen
             title="DAM — CBF coordination demo"
             loading="lazy"
+            allow="autoplay"
           ></iframe>
         </div>
         <div class="project-info">
@@ -816,9 +853,9 @@
             <span data-es>Plataforma de Visión NPU</span>
           </div>
           <div class="project-desc">
-            <span data-en>Industry-academia project at Brinno. Edge NPU image recognition integrated into a device management platform — exhibited at three international trade shows.</span>
-            <span data-zh>在 Brinno 的產學合作。邊緣 NPU 影像辨識整合進設備管理平台，於三個國際展覽中展出。</span>
-            <span data-es>Proyecto academia-empresa en Brinno. Reconocimiento de imagen NPU integrado en una plataforma de gestión — exhibido en tres ferias internacionales.</span>
+            <span data-en>Industry-academia project at Brinno. Edge NPU image recognition integrated into a device management platform — exhibited at five international trade shows across Nuremberg, Taipei, and Amsterdam.</span>
+            <span data-zh>在 Brinno 的產學合作。邊緣 NPU 影像辨識整合進設備管理平台，於五個國際展覽中展出。</span>
+            <span data-es>Proyecto academia-empresa en Brinno. Reconocimiento de imagen NPU integrado en una plataforma de gestión — exhibido en cinco ferias internacionales.</span>
           </div>
           <div class="project-chips">
             <span class="project-chip">Next.js</span>
@@ -903,26 +940,7 @@
     <div class="section-label" style="margin-top:3rem;">
       <span data-en>Recent Notes</span><span data-zh>近期筆記</span><span data-es>Notas Recientes</span>
     </div>
-    <div class="writing-list">
-      <div class="writing-row" onclick="openNote('p-cbf',event)">
-        <span class="writing-date">Jun 2026</span>
-        <span class="writing-title">
-          <span data-en>Why don't these robots crash into each other?</span>
-          <span data-zh>這些機器人為什麼不會互相撞？</span>
-          <span data-es>¿Por qué estos robots no chocan entre sí?</span>
-        </span>
-        <span class="writing-tag">DAM · CBF</span>
-      </div>
-      <div class="writing-row" onclick="openNote('p-sensor',event)">
-        <span class="writing-date">Jun 2026</span>
-        <span class="writing-title">
-          <span data-en>What if attackers target the sensors, not the AI?</span>
-          <span data-zh>如果攻擊者瞄準的是感測器，而不是 AI？</span>
-          <span data-es>¿Y si los atacantes apuntan a los sensores, no a la IA?</span>
-        </span>
-        <span class="writing-tag">DAM · Security</span>
-      </div>
-    </div>
+    <div class="writing-list" id="recent-notes-list"></div>
     <button class="see-all" onclick="showView('notes',event)">
       <span data-en>All notes</span><span data-zh>所有筆記</span><span data-es>Ver todas</span>
       <i class="ti ti-arrow-right"></i>
@@ -955,7 +973,7 @@
       <div class="year-label">2026</div>
 
       <!-- Post: Why don't these robots crash (newest DAM series) -->
-      <div class="post-row" id="p-cbf">
+      <div class="post-row" id="p-cbf" data-year="2026" data-tag="DAM · CBF">
         <div class="post-summary" onclick="toggle('p-cbf')">
           <span class="post-date">Jun</span>
           <span class="post-title">
@@ -1000,7 +1018,7 @@
             </p>
           </div>
           <div class="post-embed">
-            <iframe src="https://www.linkedin.com/embed/feed/update/urn:li:ugcPost:7476473475638165504?compact=1" height="399" width="504" frameborder="0" allowfullscreen title="Embedded post" loading="lazy"></iframe>
+            <iframe src="https://drive.google.com/file/d/1bbM-ltsCIFcyEgiF6JRkFsFuMQreIuhl/preview" frameborder="0" allowfullscreen title="DAM — CBF demo" loading="lazy" allow="autoplay" style="height:360px;"></iframe>
             <div class="post-embed-caption">
               <span data-en>Multi-robot CBF coordination · Isaac Sim · DAM series</span>
               <span data-zh>多機器人 CBF 協調 · Isaac Sim · DAM 系列</span>
@@ -1015,7 +1033,10 @@
           </div>
           <div class="post-actions">
             <a href="https://github.com/ez945y/DAM" target="_blank" class="post-action">
-              <i class="ti ti-brand-github"></i>GitHub — DAM
+              <i class="ti ti-brand-github"></i>DAM
+            </a>
+            <a href="https://github.com/ez945y" target="_blank" class="post-action">
+              <i class="ti ti-brand-github"></i>Robot practice
             </a>
           </div>
           <p class="post-cite">A. D. Ames, X. Xu, J. W. Grizzle and P. Tabuada, "Control Barrier Function Based Quadratic Programs for Safety Critical Systems," <em>IEEE Transactions on Automatic Control</em>, 2017</p>
@@ -1023,7 +1044,7 @@
       </div>
 
       <!-- Post: Sensor attacks (prev DAM series) -->
-      <div class="post-row" id="p-sensor">
+      <div class="post-row" id="p-sensor" data-year="2026" data-tag="DAM · Security">
         <div class="post-summary" onclick="toggle('p-sensor')">
           <span class="post-date">Jun</span>
           <span class="post-title">
@@ -1062,7 +1083,7 @@
             </p>
           </div>
           <div class="post-embed">
-            <iframe src="https://www.linkedin.com/embed/feed/update/urn:li:ugcPost:7472308651945496576?compact=1" height="399" width="504" frameborder="0" allowfullscreen title="Embedded post" loading="lazy"></iframe>
+            <iframe src="https://drive.google.com/file/d/1BFhJ8tejb8g_Gjt-wINpK5NUy8Fq0oWe/preview" frameborder="0" allowfullscreen title="Sensor attack demo" loading="lazy" allow="autoplay" style="height:360px;"></iframe>
             <div class="post-embed-caption">
               <span data-en>Sensor attack demo · DAM series</span>
               <span data-zh>感測器攻擊展示 · DAM 系列</span>
@@ -1074,70 +1095,31 @@
             <span class="post-chip">Sensor attacks</span>
             <span class="post-chip">DAM</span>
           </div>
+          <div class="post-actions">
+            <a href="https://github.com/ez945y/DAM" target="_blank" class="post-action">
+              <i class="ti ti-brand-github"></i>DAM
+            </a>
+            <a href="https://github.com/ez945y" target="_blank" class="post-action">
+              <i class="ti ti-brand-github"></i>Robot practice
+            </a>
+          </div>
           <p class="post-cite">Abdul Kareem Shaik, Alireza Mohammadi, Hafiz Malik, "A Systematic Review of Sensor Vulnerabilities and Cyber-Physical Threats in Industrial Robotic Systems," <em>IET</em>, 2025</p>
         </div>
       </div>
 
-      <div class="post-row" id="p-rl">
-        <div class="post-summary" onclick="toggle('p-rl')">
-          <span class="post-date">Jan</span>
-          <span class="post-title">
-            <span class="live-dot"></span>
-            <span data-en>Robot learning journal</span>
-            <span data-zh>機器人學習實驗記錄</span>
-            <span data-es>Diario de aprendizaje robótico</span>
-          </span>
-          <span class="post-toggle"><i class="ti ti-plus"></i></span>
-          <span class="post-excerpt">
-            <span data-en>Notes from experimenting with RL, imitation learning, and the sim-to-real gap using Isaac Lab and LeRobot.</span>
-            <span data-zh>使用 Isaac Lab 與 LeRobot 實驗強化學習、模仿學習與模擬真實落差的筆記。</span>
-            <span data-es>Notas de experimentos con RL, aprendizaje por imitación y la brecha sim-to-real con Isaac Lab y LeRobot.</span>
-          </span>
-        </div>
-        <div class="post-body">
-          <div class="post-body-text">
-            <p>
-              <span data-en>A living document covering RL environments in Isaac Lab, imitation learning with LeRobot, and the awkward gap between what works in simulation and what survives contact with reality.</span>
-              <span data-zh>持續更新的記錄，涵蓋 Isaac Lab 中的強化學習環境、使用 LeRobot 的模仿學習，以及模擬中有效的方法與現實接觸後能存活的方法之間那個尷尬的落差。</span>
-              <span data-es>Un documento vivo que cubre entornos RL en Isaac Lab, aprendizaje por imitación con LeRobot, y la brecha entre lo que funciona en simulación y lo que sobrevive el contacto con la realidad.</span>
-            </p>
-            <p>
-              <span data-en>I'm particularly interested in how digital twins can compress that gap — a high-fidelity simulation not just for training, but as a continuous monitor of real-world behavior.</span>
-              <span data-zh>我對數位孿生如何縮小這個落差特別感興趣——不只是用於訓練，而是將高精度模擬作為持續監控真實世界行為的工具。</span>
-              <span data-es>Me interesa especialmente cómo los gemelos digitales pueden comprimir esa brecha — usando una simulación de alta fidelidad no solo para entrenamiento, sino como monitor continuo del comportamiento en el mundo real.</span>
-            </p>
-          </div>
-          <div class="post-chips">
-            <span class="post-chip">Isaac Lab</span>
-            <span class="post-chip">LeRobot</span>
-            <span class="post-chip">RL / IL</span>
-            <span class="post-chip">Digital Twins</span>
-          </div>
-          <div class="post-actions">
-            <a href="https://github.com/ez945y" target="_blank" class="post-action">
-              <i class="ti ti-brand-github"></i>GitHub
-            </a>
-          </div>
-        </div>
-      </div>
-    </div>
-
-    <div class="year-group">
-      <div class="year-label">2024</div>
-
-      <div class="post-row" id="p-npu">
+      <div class="post-row" id="p-npu" data-year="2026" data-tag-en="Edge AI · Full Stack" data-tag-zh="Edge AI · 全端" data-tag-es="Edge AI · Full Stack">
         <div class="post-summary" onclick="toggle('p-npu')">
-          <span class="post-date">Nov</span>
+          <span class="post-date">Jun</span>
           <span class="post-title">
-            <span data-en>NPU vision platform — Embedded World, Computex, IBC</span>
-            <span data-zh>NPU 視覺平台 — Embedded World、Computex、IBC</span>
-            <span data-es>Plataforma de visión NPU — Embedded World, Computex, IBC</span>
+            <span data-en>NPU vision platform — five international trade shows</span>
+            <span data-zh>NPU 視覺平台 — 五場國際展覽</span>
+            <span data-es>Plataforma de visión NPU — cinco ferias internacionales</span>
           </span>
           <span class="post-toggle"><i class="ti ti-plus"></i></span>
           <span class="post-excerpt">
-            <span data-en>An industry-academia project at Brinno that ended up shown at three international trade shows.</span>
-            <span data-zh>在 Brinno 的產學合作專案，最後在三個國際展覽中展出。</span>
-            <span data-es>Un proyecto academia-empresa en Brinno que terminó siendo presentado en tres ferias internacionales.</span>
+            <span data-en>An industry-academia project at Brinno that ended up shown at five international trade shows.</span>
+            <span data-zh>在 Brinno 的產學合作專案，最後在五個國際展覽中展出。</span>
+            <span data-es>Un proyecto academia-empresa en Brinno que terminó siendo presentado en cinco ferias internacionales.</span>
           </span>
         </div>
         <div class="post-body">
@@ -1148,9 +1130,9 @@
               <span data-es>Integrar el entrenamiento y despliegue de modelos NPU de bajo consumo en una plataforma de gestión todo-en-uno. Trabajé en la capa AI-to-web — frontend Next.js, backend FastAPI, en AWS EC2.</span>
             </p>
             <p>
-              <span data-en>Exhibited at Embedded World 2025 & 2026 (Nuremberg), Computex 2025 (Taipei), and IBC 2025 (Amsterdam). Running a product at actual trade show booths is a different kind of stress test.</span>
-              <span data-zh>展示於 Embedded World 2025 & 2026（紐倫堡）、Computex 2025（台北）與 IBC 2025（阿姆斯特丹）。在真實展覽攤位上運行產品，是完全不同類型的壓力測試。</span>
-              <span data-es>Exhibido en Embedded World 2025 & 2026 (Núremberg), Computex 2025 (Taipei) e IBC 2025 (Ámsterdam). Ejecutar un producto en stands reales es un tipo de prueba de estrés muy diferente.</span>
+              <span data-en>Exhibited at Embedded World 2025 & 2026 (Nuremberg), Computex 2025 & 2026 (Taipei), and IBC 2025 (Amsterdam) — five shows in total. Running a live product at actual trade show booths is a different kind of stress test than a staging environment.</span>
+              <span data-zh>展示於 Embedded World 2025 & 2026（紐倫堡）、Computex 2025 & 2026（台北）與 IBC 2025（阿姆斯特丹），共五場展覽。在真實展覽攤位上運行產品，是與 staging 環境完全不同類型的壓力測試。</span>
+              <span data-es>Exhibido en Embedded World 2025 & 2026 (Núremberg), Computex 2025 & 2026 (Taipei) e IBC 2025 (Ámsterdam) — cinco ferias en total. Ejecutar un producto en vivo en stands reales es un tipo de prueba de estrés muy diferente a un entorno de staging.</span>
             </p>
           </div>
           <div class="post-chips">
@@ -1163,9 +1145,220 @@
         </div>
       </div>
 
-      <div class="post-row" id="p-rag">
+      <!-- DAM origin -->
+      <div class="post-row" id="p-dam-origin" data-year="2026" data-tag="DAM">
+        <div class="post-summary" onclick="toggle('p-dam-origin')">
+          <span class="post-date">May</span>
+          <span class="post-title">
+            <span data-en>Why I built DAM</span>
+            <span data-zh>我為什麼做 DAM</span>
+            <span data-es>Por qué construí DAM</span>
+          </span>
+          <span class="post-toggle"><i class="ti ti-plus"></i></span>
+          <span class="post-excerpt">
+            <span data-en>Everything looked fine in simulation. Then the robot started grabbing the wrong thing.</span>
+            <span data-zh>模擬裡一切看起來都沒問題。然後機器人開始抓錯東西。</span>
+            <span data-es>Todo se veía bien en simulación. Luego el robot empezó a agarrar lo que no debía.</span>
+          </span>
+        </div>
+        <div class="post-body">
+          <div class="post-body-text">
+            <p>
+              <span data-en>When I first started running learned robot policies on real hardware, the scariest part wasn't training. It was the moment I thought, "okay, this model should work now," and then watched the robot start grabbing the wrong thing, bumping into objects, or pushing joints way harder than it should.</span>
+              <span data-zh>當我第一次把學好的機器人策略跑在真實硬體上，最令人害怕的部分不是訓練本身，而是那個當下——我心想「好了，這個模型應該可以了」，然後就看著機器人開始抓錯東西、撞上物件，或是把關節推得比應該的力道猛得多。</span>
+              <span data-es>Cuando empecé a correr políticas de robots en hardware real, la parte más aterradora no fue el entrenamiento. Fue el momento en que pensé "bien, este modelo ya debería funcionar," y luego vi al robot agarrar lo incorrecto, chocar con objetos, o empujar las articulaciones mucho más fuerte de lo que debería.</span>
+            </p>
+            <p>
+              <span data-en>Everything looked fine in simulation. But in the real world, the policy has no idea when something is becoming unsafe or just a bad action. It only knows how to output the next move.</span>
+              <span data-zh>模擬裡一切看起來都沒問題。但在真實世界裡，策略根本不知道什麼時候動作變得不安全，或者只是一個糟糕的決策——它只知道要輸出下一個動作。</span>
+              <span data-es>Todo se veía bien en simulación. Pero en el mundo real, la política no tiene idea de cuándo algo se está volviendo inseguro. Solo sabe cómo generar el siguiente movimiento.</span>
+            </p>
+            <p>
+              <span data-en>That's why I built DAM — an open-source middleware that sits between ML policies and robot hardware. Over time, I realized the point of DAM isn't really "safety." It's helping us understand the boundaries of a policy before something goes wrong.</span>
+              <span data-zh>這就是我建構 DAM 的原因——一個介於 ML 策略與機器人硬體之間的開源中介軟體。後來我意識到，DAM 的重點其實不是「安全」，而是幫助我們在出問題之前，先理解一個策略的邊界在哪裡。</span>
+              <span data-es>Por eso construí DAM — un middleware open-source que se ubica entre políticas ML y hardware robótico. Con el tiempo me di cuenta que el punto de DAM no es realmente la "seguridad." Es ayudarnos a entender los límites de una política antes de que algo salga mal.</span>
+            </p>
+            <p>
+              <span data-en>During data collection, it helps smooth out motions and gives operators a better sense of which actions create bad data. During training, it becomes easier to spot policies getting stuck exploring obviously bad behaviors. During deployment, the most useful thing is often not success — it's finally seeing where the policy starts to break down.</span>
+              <span data-zh>在資料收集階段，它幫助平滑動作，讓操作者更清楚哪些動作會產生壞數據。在訓練階段，更容易發現策略卡在探索明顯錯誤行為的狀況。在部署階段，最有價值的往往不是成功，而是終於能看到策略從哪裡開始崩壞。</span>
+              <span data-es>Durante la recolección de datos, ayuda a suavizar movimientos y da a los operadores una mejor idea de qué acciones generan malos datos. Durante el entrenamiento, es más fácil detectar políticas atrapadas explorando comportamientos obviamente malos. Durante el despliegue, lo más útil no suele ser el éxito — es finalmente ver dónde la política empieza a fallar.</span>
+            </p>
+            <p>
+              <span data-en>The goal isn't to hide failures. It's to make them visible and easier to understand. DAM is already integrated with LeRobot workflows, and I'm currently working on ROS integration as well. This is still research software, not a certified safety system — but if we can't clearly see the limits of a policy, it's hard to build robot learning systems we can actually trust.</span>
+              <span data-zh>目標不是隱藏失敗，而是讓失敗變得可見、更容易理解。DAM 已經整合進 LeRobot 工作流程，我目前也在推進 ROS 整合。這仍然是研究軟體，不是認證過的安全系統——但如果我們無法清楚看到一個策略的極限，就很難建立真正值得信賴的機器人學習系統。</span>
+              <span data-es>El objetivo no es ocultar los fallos. Es hacerlos visibles y más fáciles de entender. DAM ya está integrado con flujos de trabajo LeRobot, y actualmente trabajo en la integración con ROS. Esto sigue siendo software de investigación, no un sistema de seguridad certificado — pero si no podemos ver claramente los límites de una política, es difícil construir sistemas de aprendizaje robótico en los que realmente confiar.</span>
+            </p>
+          </div>
+          <div class="post-chips">
+            <span class="post-chip">DAM</span>
+            <span class="post-chip">LeRobot</span>
+            <span class="post-chip">ROS2</span>
+            <span class="post-chip">Open Source</span>
+          </div>
+          <div class="post-actions">
+            <a href="https://github.com/ez945y/DAM" target="_blank" class="post-action">
+              <i class="ti ti-brand-github"></i>GitHub — DAM
+            </a>
+          </div>
+        </div>
+      </div>
+
+
+
+      <!-- Market Hype vs Reality -->
+      <div class="post-row" id="p-market" data-year="2026" data-tag="Industry">
+        <div class="post-summary" onclick="toggle('p-market')">
+          <span class="post-date">Apr</span>
+          <span class="post-title">
+            <span data-en>Market hype vs. reality in robotics</span>
+            <span data-zh>機器人市場的炒作與現實</span>
+            <span data-es>Hype vs. realidad en robótica</span>
+          </span>
+          <span class="post-toggle"><i class="ti ti-plus"></i></span>
+          <span class="post-excerpt">
+            <span data-en>After visiting practitioners at SAVFE Tech, Aurotek, and Advantech — there are deep physical gaps between technical breakthroughs and commercial viability.</span>
+            <span data-zh>看過思輔、和椿、研華這些第一線實作後，技術突破跟商業落地之間其實隔著幾道很現實的鴻溝。</span>
+            <span data-es>Tras visitar a profesionales en SAVFE Tech, Aurotek y Advantech — hay brechas físicas profundas entre los avances técnicos y la viabilidad comercial.</span>
+          </span>
+        </div>
+        <div class="post-body">
+          <div class="post-body-text">
+            <p>
+              <span data-en>Digital Twins solved the data shortage and VLA gave robots common sense, but practitioners on the ground know the reality is much harsher. There are still deep physical gaps between technical breakthroughs and commercial viability.</span>
+              <span data-zh>當 Digital Twins 解決了數據荒且 VLA 讓機器人有了常識，大小公司都在瘋狂佈局時，市場真正的需求到底解決了什麼？看過思輔、和椿、研華這些第一線實作後，我覺得技術突破跟商業落地之間其實隔著幾道很現實的鴻溝。</span>
+              <span data-es>Digital Twins resolvió la escasez de datos y VLA dio sentido común a los robots, pero los profesionales sobre el terreno saben que la realidad es mucho más dura. Hay brechas físicas profundas entre los avances técnicos y la viabilidad comercial.</span>
+            </p>
+            <p>
+              <span data-en><strong>1. Reliability beats flexibility every time.</strong> In surgery or on a factory floor, we don't need a robot to be creative. We need absolute stability. Products making money today are built on code-first architecture where AI is just an assistant. It's not about model size — it's about providing a low-latency, hardware-aware layer that lets hardcoded safety rules keep everything in check.</span>
+              <span data-zh><strong>1. 穩定性始終大於靈活性。</strong>在手術室或工廠，我們不需要機器人展現靈光一閃，而是需要它在物理極限與安全規則下絕對穩定。現在能賺錢的產品核心依然是程式架構為主且 AI 為輔。價值不在於模型多聰明，而是如何提供穩定且低延遲的硬體感知層，讓程式規則守住物理底線。</span>
+              <span data-es><strong>1. La fiabilidad siempre supera la flexibilidad.</strong> En cirugía o en una fábrica no necesitamos que un robot sea creativo. Necesitamos estabilidad absoluta. Los productos que ganan dinero hoy se basan en arquitecturas code-first donde la IA es solo un asistente.</span>
+            </p>
+            <p>
+              <span data-en><strong>2. Data filtering matters more than scale.</strong> No matter how good the simulation looks, random noise and corner cases in the physical world are deal-breakers. 10,000 hours of virtual data often can't match one hour of capturing a real-world problem. Filtering out physically irrelevant data is the true key to bridging the reality gap.</span>
+              <span data-zh><strong>2. 數據篩選大於數據規模。</strong>模擬器跑出來的東西再漂亮，進到實體環境那種隨機的噪音跟邊界狀況才是致命傷。1 萬小時的虛擬數據，有時不如 1 小時抓到真實問題的數據。過濾掉物理無效的資訊，才是跨越真實落差的關鍵。</span>
+              <span data-es><strong>2. El filtrado de datos importa más que la escala.</strong> No importa qué tan buena se vea la simulación — el ruido aleatorio y los casos extremos en el mundo físico son fatales. 10,000 horas de datos virtuales a menudo no igualan una hora capturando un problema del mundo real.</span>
+            </p>
+            <p>
+              <span data-en><strong>3. The supply chain is the moat.</strong> As Jensen Huang noted, this is a heavy-asset industry. Beyond algorithms, success depends on IEC 61508 safety protocols and slow hardware iteration cycles. Scaling still needs 3–4 years. Instead of trying to make robots think like humans, we should focus on making them faster without making mistakes within their physical constraints.</span>
+              <span data-zh><strong>3. 供應鏈就是護城河。</strong>如黃仁勳所說，機器人屬於重資產行業，除了演算法，更要符合 IEC 61508 的安全協議。硬體迭代的週期決定了機器人規模化仍需 3 到 4 年。與其追求讓機器人像人一樣思考，不如先讓它在物理約束且不犯錯的基礎上提高任務效率。</span>
+              <span data-es><strong>3. La cadena de suministro es el foso.</strong> Como señaló Jensen Huang, esta es una industria de activos pesados. Más allá de los algoritmos, el éxito depende de los protocolos de seguridad IEC 61508 y los lentos ciclos de iteración de hardware. La escalabilidad aún necesita 3–4 años.</span>
+            </p>
+          </div>
+          <div class="post-chips">
+            <span class="post-chip">Industry</span>
+            <span class="post-chip">Physical AI</span>
+            <span class="post-chip">Digital Twins</span>
+            <span class="post-chip">VLA</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Real-to-Sim-to-Real -->
+      <div class="post-row" id="p-real2sim" data-year="2026" data-tag="Isaac Sim · Isaac Lab">
+        <div class="post-summary" onclick="toggle('p-real2sim')">
+          <span class="post-date">Feb</span>
+          <span class="post-title">
+            <span data-en>The gap between sim and real</span>
+            <span data-zh>模擬與現實之間的落差</span>
+            <span data-es>La brecha entre simulación y realidad</span>
+          </span>
+          <span class="post-toggle"><i class="ti ti-plus"></i></span>
+          <span class="post-excerpt">
+            <span data-en>From physical collection → Isaac Sim augmentation → real-world deployment. First results with SmolVLA, ACT, and Diffusion Policy.</span>
+            <span data-zh>從實體採集到 Isaac Sim 模擬增強，再到真實世界部署的完整迴路。SmolVLA、ACT 與 Diffusion Policy 的初步結果。</span>
+            <span data-es>De la recolección física → aumentación en Isaac Sim → despliegue real. Primeros resultados con SmolVLA, ACT y Diffusion Policy.</span>
+          </span>
+        </div>
+        <div class="post-body">
+          <div class="post-body-text">
+            <p>
+              <span data-en>I've successfully established a seamless data loop, enabling a complete transition from physical collection to simulated data augmentation and back to real-world deployment.</span>
+              <span data-zh>我成功建立了一個完整的數據迴路，實現從實體採集到模擬數據增強，再到真實世界部署的完整流程。</span>
+              <span data-es>Logré establecer un ciclo de datos sin interrupciones, habilitando una transición completa desde la recolección física hasta la aumentación simulada y de vuelta al despliegue real.</span>
+            </p>
+            <p>
+              <span data-en>The pipeline: <strong>LeRobot</strong> for real-world data collection → <strong>NVIDIA Isaac Sim</strong> as the high-fidelity digital twin → <strong>NVIDIA Isaac Mimic</strong> for data augmentation (turning sparse real-world episodes into massive synthetic training sets) → <strong>Lesaac</strong> for cross-platform format translation → <strong>LeRobot</strong> for training and deployment.</span>
+              <span data-zh>流程：<strong>LeRobot</strong> 採集真實數據 → <strong>NVIDIA Isaac Sim</strong> 高精度數位孿生環境 → <strong>NVIDIA Isaac Mimic</strong> 數據增強（將稀疏的真實樣本轉化為大量合成訓練集）→ <strong>Lesaac</strong> 跨平台格式轉換 → <strong>LeRobot</strong> 訓練與部署。</span>
+              <span data-es>El pipeline: <strong>LeRobot</strong> para recolección real → <strong>NVIDIA Isaac Sim</strong> como gemelo digital de alta fidelidad → <strong>NVIDIA Isaac Mimic</strong> para aumentación de datos → <strong>Lesaac</strong> para traducción de formato → <strong>LeRobot</strong> para entrenamiento y despliegue.</span>
+            </p>
+            <p>
+              <span data-en>Grasp task POC: 7 real episodes → 50 synthetic episodes, tested on SmolVLA, ACT, and Diffusion Policy. Result: only SmolVLA could barely finish the task. The others performed worse than training on the real dataset alone. But there's room to improve.</span>
+              <span data-zh>抓取任務概念驗證：7 個真實 episode → 生成 50 個合成 episode，在 SmolVLA、ACT 與 Diffusion Policy 上測試。結果：只有 SmolVLA 勉強能完成任務，其他的表現比只用真實數據集還差，但仍有改善空間。</span>
+              <span data-es>POC de tarea de agarre: 7 episodios reales → 50 episodios sintéticos, probados en SmolVLA, ACT y Diffusion Policy. Resultado: solo SmolVLA logró apenas terminar la tarea. Los demás rindieron peor que entrenando solo con datos reales. Pero hay margen de mejora.</span>
+            </p>
+            <p>
+              <span data-en>Next: building more object variations and shapes, boosting data efficiency with Domain Randomization, and improving policy robustness.</span>
+              <span data-zh>下一步：增加更多物件的數量與形狀，加入 Domain Randomization 提升數據效率，進一步改善策略的魯棒性。</span>
+              <span data-es>Siguiente: construir más variaciones y formas de objetos, mejorar la eficiencia de datos con Domain Randomization, y mejorar la robustez de la política.</span>
+            </p>
+          </div>
+          <div class="post-chips">
+            <span class="post-chip">LeRobot</span>
+            <span class="post-chip">Isaac Sim</span>
+            <span class="post-chip">Isaac Lab</span>
+            <span class="post-chip">Isaac Mimic</span>
+            <span class="post-chip">SmolVLA</span>
+            <span class="post-chip">Domain Randomization</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Basics: IK, Jacobians, Curriculum -->
+      <div class="post-row" id="p-basics" data-year="2026" data-tag="Isaac Lab">
+        <div class="post-summary" onclick="toggle('p-basics')">
+          <span class="post-date">Jan</span>
+          <span class="post-title">
+            <span data-en>I stopped and went back to the basics</span>
+            <span data-zh>我停下來，回去學基礎</span>
+            <span data-es>Me detuve y volví a los fundamentos</span>
+          </span>
+          <span class="post-toggle"><i class="ti ti-plus"></i></span>
+          <span class="post-excerpt">
+            <span data-en>Hitting a wall with Real-to-Sim stability. Spent time with IK, Jacobians, TCP frames, and Curriculum Learning. It helped.</span>
+            <span data-zh>Real-to-Sim 的穩定性遇到瓶頸。花時間重新學 IK、雅可比矩陣、TCP 座標系與課程學習，有效果。</span>
+            <span data-es>Chocando contra un muro en la estabilidad Real-to-Sim. Me tomé tiempo con IK, Jacobianos, marcos TCP y Curriculum Learning. Funcionó.</span>
+          </span>
+        </div>
+        <div class="post-body">
+          <div class="post-body-text">
+            <p>
+              <span data-en>While experimenting with data generation for the stacking task using both leader arm (absolute) and keyboard (relative) control modes, I faced significant bottlenecks in Real-to-Sim stability and Isaac Mimic requirements.</span>
+              <span data-zh>在用 leader arm（絕對控制）和鍵盤（相對控制）兩種模式為堆疊任務生成數據時，Real-to-Sim 穩定性與 Isaac Mimic 的需求出現了嚴重瓶頸。</span>
+              <span data-es>Mientras experimentaba con la generación de datos para la tarea de apilado usando modos de control leader arm (absoluto) y teclado (relativo), me encontré con cuellos de botella significativos en la estabilidad Real-to-Sim.</span>
+            </p>
+            <p>
+              <span data-en>I realized the problems came from missing core concepts. So I spent time strictly learning the basics — 5-DOF IK controllers, Jacobians, TCP coordinate systems, and Curriculum Learning in Isaac Lab.</span>
+              <span data-zh>我意識到問題出在缺少核心概念，所以花時間認真學習基礎——5-DOF IK 控制器、雅可比矩陣、TCP 座標系，以及 Isaac Lab 中的課程學習。</span>
+              <span data-es>Me di cuenta de que los problemas venían de que me faltaban conceptos básicos. Así que me tomé tiempo para aprender estrictamente los fundamentos — controladores IK de 5-DOF, Jacobianos, sistemas de coordenadas TCP, y Curriculum Learning en Isaac Lab.</span>
+            </p>
+            <p>
+              <span data-en>With this new knowledge, I went back and improved the drawer opening task I'd done before — built a better controller and fixed the reward functions without reward hacking. This proved that having a strong foundation is the only way to go further.</span>
+              <span data-zh>用新學的東西回頭改良了之前做的抽屜開啟任務——建了更好的控制器，修正了獎勵函數，也避免了獎勵欺騙的問題。這次經驗證明，打好基礎才是走遠的唯一方式。</span>
+              <span data-es>Con este nuevo conocimiento, volví y mejoré la tarea de apertura de cajón que había hecho antes — construí un mejor controlador y arreglé las funciones de recompensa sin reward hacking. Esto demostró que tener una base sólida es la única forma de ir más lejos.</span>
+            </p>
+            <p>
+              <span data-en>Next: switching to vision-based learning for the SO-ARM101 and exploring VLA models. The path feels much clearer now.</span>
+              <span data-zh>下一步：為 SO-ARM101 切換到視覺為主的學習方式，探索 VLA 模型。現在路清晰多了。</span>
+              <span data-es>Siguiente: cambiar a aprendizaje basado en visión para el SO-ARM101 y explorar modelos VLA. El camino se ve mucho más claro ahora.</span>
+            </p>
+          </div>
+          <div class="post-chips">
+            <span class="post-chip">Isaac Lab</span>
+            <span class="post-chip">IK / Jacobians</span>
+            <span class="post-chip">Curriculum Learning</span>
+            <span class="post-chip">SO-ARM101</span>
+          </div>
+        </div>
+      </div>
+
+    </div><!-- end year-group 2026 -->
+
+    <div class="year-group">
+      <div class="year-label">2024</div>
+
+      <div class="post-row" id="p-rag" data-year="2024" data-tag="Taiwan Mobile">
         <div class="post-summary" onclick="toggle('p-rag')">
-          <span class="post-date">Dec</span>
+          <span class="post-date">Jun</span>
           <span class="post-title">
             <span data-en>RAG for code, and what I learned presenting to 160 engineers</span>
             <span data-zh>RAG 用於程式碼，以及我在對 160 位工程師演講時學到的事</span>
@@ -1199,6 +1392,7 @@
         </div>
       </div>
 
+
     </div>
     <div style="height:4rem;"></div>
   </div>
@@ -1229,21 +1423,34 @@
         </p>
         <p>
           <span data-en>Before robotics, I worked at Taiwan Mobile — building a RAG-based code assistant, doing Gaussian Splatting research, and running QA automation for the M+ app. Currently at Brinno working on Edge AI and device management.</span>
-          <span data-zh>在投入機器人研究之前，我在台灣大哥大實習——建構 RAG 程式碼助理、做 Gaussian Splatting 研究，以及為 M+ App 開發 QA 自動化測試。目前在 Brinno 從事邊緣 AI 與設備管理的工作。</span>
+          <span data-zh>在投入機器人研究之前，我在台灣大哥大實習，建構 RAG 程式碼助理、做 Gaussian Splatting 研究，以及為 M+ App 開發 QA 自動化測試。目前在 Brinno 從事邊緣 AI 與設備管理的工作。</span>
           <span data-es>Antes de la robótica, trabajé en Taiwan Mobile — construyendo un asistente de código RAG, haciendo investigación en Gaussian Splatting y ejecutando automatización QA para la app M+. Actualmente en Brinno en Edge AI y gestión de dispositivos.</span>
         </p>
         <p>
-          <span data-en>I want to become a Digital Twin Engineer — someone who bridges the gap between what works in simulation and what holds up in the physical world.</span>
-          <span data-zh>我想成為一名數位孿生工程師——一個能弭平模擬世界與實體世界之間落差的人。</span>
-          <span data-es>Quiero convertirme en un Ingeniero de Gemelos Digitales — alguien que cierre la brecha entre lo que funciona en simulación y lo que aguanta en el mundo físico.</span>
+          <span data-en>Figuring out why something doesn't transfer cleanly from sim to real — that's half the fun. There's a line I keep coming back to: "Insight builds with accumulation, and wisdom is forged each night."</span>
+          <span data-zh>搞清楚是為什麼，本身就是一件很好玩的事。我很喜歡這句話：「洞察由積累而生，智慧於每夜錘鍊。」</span>
+          <span data-es>Descubrir por qué algo no se transfiere limpiamente del sim a la realidad — eso es la mitad de la diversión. Hay una frase a la que siempre vuelvo: "La perspicacia se construye con la acumulación, y la sabiduría se forja cada noche."</span>
         </p>
       </div>
 
-      <p class="about-prose" style="margin-top:0;">
-        <span data-en>"Insight builds with accumulation, and wisdom is forged each night."</span>
-        <span data-zh>「洞察由積累而生，智慧於每夜錘鍊。」</span>
-        <span data-es>"La perspicacia se construye con la acumulación, y la sabiduría se forja cada noche."</span>
-      </p>
+
+      <div class="about-h">
+        <span data-en>Education</span><span data-zh>學歷</span><span data-es>Educación</span>
+      </div>
+      <div class="plain-exp">
+        <div class="plain-exp-row">
+          <span class="plain-date"><span class="now-dot">●</span>2025 – 2026</span>
+          <span>
+            <div class="plain-role"><span data-en>M.S. Information Security, NTUT</span><span data-zh>資訊安全碩士，台北科技大學</span><span data-es>Máster en Seguridad de la Información, NTUT</span></div>
+          </span>
+        </div>
+        <div class="plain-exp-row">
+          <span class="plain-date">2020 – 2024</span>
+          <span>
+            <div class="plain-role"><span data-en>B.S. Information and Finance Management, NTUT</span><span data-zh>資訊與財務管理學士，台北科技大學</span><span data-es>Grado en Gestión de Información y Finanzas, NTUT</span></div>
+          </span>
+        </div>
+      </div>
 
       <div class="about-h">
         <span data-en>Experience</span><span data-zh>經歷</span><span data-es>Experiencia</span>
@@ -1295,8 +1502,68 @@
       </div>
 
       <div class="about-h">
-        <span data-en>Links</span><span data-zh>連結</span><span data-es>Vínculos</span>
+        <span data-en>Certifications</span><span data-zh>證照</span><span data-es>Certificaciones</span>
       </div>
+      <div class="plain-exp">
+
+        <div class="cert-group-label">NVIDIA</div>
+        <div class="plain-exp-row">
+          <span class="plain-date">Jun 2026</span>
+          <span><div class="plain-role">NVIDIA-Certified Associate: AI Infrastructure and Operations</div></span>
+        </div>
+        <div class="plain-exp-row">
+          <span class="plain-date">Jun 2026</span>
+          <span><div class="plain-role">NVIDIA-Certified Associate: Generative AI Multimodal</div></span>
+        </div>
+
+        <div class="cert-group-label"><span data-en>Cloud</span><span data-zh>雲端</span><span data-es>Nube</span></div>
+        <div class="plain-exp-row">
+          <span class="plain-date">May 2025</span>
+          <span><div class="plain-role">AWS Certified Solutions Architect – Associate</div></span>
+        </div>
+        <div class="plain-exp-row">
+          <span class="plain-date">Jun 2024</span>
+          <span><div class="plain-role">AWS Certified Cloud Practitioner</div></span>
+        </div>
+
+        <div class="cert-group-label"><span data-en>Security &amp; AI</span><span data-zh>資安 &amp; AI</span><span data-es>Seguridad &amp; IA</span></div>
+        <div class="plain-exp-row">
+          <span class="plain-date">Jun 2026</span>
+          <span><div class="plain-role"><span data-en>iPAS Certified Information Security Engineer (T01-Associate)</span><span data-zh>iPAS 資訊安全工程師（T01-初級）</span><span data-es>iPAS Certified Information Security Engineer (T01-Associate)</span></div></span>
+        </div>
+        <div class="plain-exp-row">
+          <span class="plain-date">May 2025</span>
+          <span><div class="plain-role"><span data-en>iPAS Certified AI Application Planner (Z01-Associate)</span><span data-zh>iPAS AI 應用規劃師（Z01-初級）</span><span data-es>iPAS Certified AI Application Planner (Z01-Associate)</span></div></span>
+        </div>
+        <div class="plain-exp-row">
+          <span class="plain-date">Sep 2025</span>
+          <span><div class="plain-role">Gemini Certified Educator · Google</div></span>
+        </div>
+        <div class="plain-exp-row">
+          <span class="plain-date">—</span>
+          <span><div class="plain-role"><span data-en>Level B Technician for Computer Software Application</span><span data-zh>電腦軟體應用乙級技術士</span><span data-es>Técnico Nivel B en Aplicaciones de Software</span></div></span>
+        </div>
+
+        <div class="cert-group-label"><span data-en>Finance</span><span data-zh>財務金融</span><span data-es>Finanzas</span></div>
+        <div class="plain-exp-row">
+          <span class="plain-date">—</span>
+          <span><div class="plain-role"><span data-en>Qualification Exam for Securities Investment Trust &amp; Consulting</span><span data-zh>投信投顧業務員資格測驗</span><span data-es>Examen de Fideicomisos de Valores</span></div></span>
+        </div>
+        <div class="plain-exp-row">
+          <span class="plain-date">—</span>
+          <span><div class="plain-role"><span data-en>Qualification Exam for Senior Securities Specialist</span><span data-zh>高級證券商業務員資格測驗</span><span data-es>Examen para Especialista Senior en Valores</span></div></span>
+        </div>
+
+      </div>
+
+      <div class="about-h" style="margin-top:2rem;">
+        <span data-en>Get in Touch</span><span data-zh>聯絡我</span><span data-es>Contacto</span>
+      </div>
+      <p class="about-prose" style="margin-bottom:1.25rem;">
+        <span data-en>Always happy to chat — about robotics, projects, or just meet new people. If there's a chance to work together, even better.</span>
+        <span data-zh>隨時歡迎聊天，不管是機器人、專案，還是單純認識一下都好。如果有機會一起做點什麼，那就更好了。</span>
+        <span data-es>Siempre dispuesto a conversar — sobre robótica, proyectos, o simplemente conocer gente. Si hay posibilidad de colaborar, mejor todavía.</span>
+      </p>
       <div class="about-links">
         <a href="https://www.linkedin.com/in/mikechenyz/" target="_blank" class="about-link">
           <i class="ti ti-brand-linkedin"></i>linkedin.com/in/mikechenyz
@@ -1336,6 +1603,32 @@
     box.appendChild(el);
   };
   img.src = './mike.jpg';
+
+  function buildRecentNotes(n) {
+    const list = document.getElementById('recent-notes-list');
+    if (!list) return;
+    const posts = [...document.querySelectorAll('#view-notes .post-row')].slice(0, n || 5);
+    list.innerHTML = posts.map(p => {
+      const id = p.id;
+      const month = p.querySelector('.post-date')?.textContent.trim() || '';
+      const year = p.dataset.year || '';
+      const lang = document.body.className.replace('lang-', '') || 'en';
+      const tag = p.dataset['tag' + lang.charAt(0).toUpperCase() + lang.slice(1)] || p.dataset.tag || '';
+      const en = p.querySelector('.post-title [data-en]')?.innerHTML || '';
+      const zh = p.querySelector('.post-title [data-zh]')?.innerHTML || '';
+      const es = p.querySelector('.post-title [data-es]')?.innerHTML || '';
+      return `<div class="writing-row" onclick="openNote('${id}',event)">
+        <span class="writing-date">${month} ${year}</span>
+        <span class="writing-title">
+          <span data-en>${en}</span>
+          <span data-zh>${zh}</span>
+          <span data-es>${es}</span>
+        </span>
+        <span class="writing-tag">${tag}</span>
+      </div>`;
+    }).join('');
+  }
+  buildRecentNotes(5);
 
   function showView(name, e) {
     if (e) e.preventDefault();
